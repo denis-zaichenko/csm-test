@@ -1,21 +1,30 @@
 import React from "react"
-import { useStaticQuery } from "gatsby"
+import { useStaticQuery, graphql } from "gatsby"
+
+import { Picture } from "../components/picture"
 
 export default function Test() {
   const data = useStaticQuery(graphql`
     {
-      markdownRemark(frontmatter: { path: { eq: "/test" } }) {
-        html
+      markdownRemark(frontmatter: { title: { eq: "About us" } }) {
         frontmatter {
-          date(formatString: "MMMM DD, YYYY")
-          path
+          paragraphs
+          image
           title
         }
       }
     }
   `)
 
-  console.log(data)
+  const { paragraphs, image, title } = data.markdownRemark.frontmatter
 
-  return <div>Test page</div>
+  return (
+    <>
+      <h3>{title}</h3>
+      <Picture name={image.replace("/assets/", "")} />
+      {paragraphs.map(paragraph => (
+        <p key={paragraph}>{paragraph}</p>
+      ))}
+    </>
+  )
 }
